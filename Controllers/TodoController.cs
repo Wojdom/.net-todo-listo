@@ -1,26 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Models;
 using TodoList.Data;
 
 namespace ToDoList.Controllers
 {
-    public class TodoController : Controller
+    public class TodoController(ILogger<TodoController> logger, TodoDbContext context) : Controller
     {
-        private readonly ILogger<TodoController> _logger;
+        private readonly ILogger<TodoController> _logger = logger;
 
-        private readonly TodoDbContext _dbContext;
-
-        public TodoController(ILogger<TodoController> logger, TodoDbContext context)
-        {
-            _logger = logger;
-            _dbContext = context;
-        }
+        private readonly TodoDbContext _dbContext = context;
 
         // GET: Todo
         public async Task<IActionResult> Index()
@@ -31,6 +20,8 @@ namespace ToDoList.Controllers
         // GET: Todo/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            this._logger.LogInformation("Details action called");
+
             if (id == null)
             {
                 return NotFound();
@@ -57,10 +48,13 @@ namespace ToDoList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,IsDone,CreatedAt,UpdatedAt,DueDate")] Todo todo)
+        public async Task<IActionResult> Create([Bind("Id,Description,IsDone,DueDate")] Todo todo)
         {
+            this._logger.LogDebug("Create action called");
+
             if (ModelState.IsValid)
             {
+                this._logger.LogDebug("Model is valid");
                 _dbContext.Add(todo);
                 await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -89,7 +83,7 @@ namespace ToDoList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,IsDone,CreatedAt,UpdatedAt,DueDate")] Todo todo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,IsDone,DueDate")] Todo todo)
         {
             if (id != todo.Id)
             {
@@ -100,6 +94,7 @@ namespace ToDoList.Controllers
             {
                 try
                 {
+                    todo.UpdatedAt = DateTime.Now;
                     _dbContext.Update(todo);
                     await _dbContext.SaveChangesAsync();
                 }
