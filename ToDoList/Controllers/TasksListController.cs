@@ -31,7 +31,8 @@ namespace ToDoList.Controllers
             }
 
             var todoList = await _dbContext.TasksLists
-                .FirstOrDefaultAsync(m => m.Id == id);
+                        .Include(t => t.Todos) 
+                        .FirstOrDefaultAsync(m => m.Id == id);
             if (todoList == null)
             {
                 return NotFound();
