@@ -20,6 +20,7 @@ namespace ToDoList.Controllers
             }
 
             var tasks = from t in _dbContext.Todos
+                        where t.TasksListId == null
                         select t;
             if (!string.IsNullOrEmpty(searchString))
             {

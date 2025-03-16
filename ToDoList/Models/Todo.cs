@@ -29,9 +29,9 @@ public class Todo
     [DataType(DataType.Date)]
     public DateTime? DueDate { get; set; }
 
-    public int? TodoListId { get; set; }
+    public int? TasksListId { get; set; }
 
-    public virtual TasksList? TodoList { get; set; }
+    public virtual TasksList? TasksList { get; set; }
 
     public Todo()
     {

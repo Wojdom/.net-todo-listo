@@ -24,25 +24,56 @@ public static class SeedData
             context.Todos.AddRange(
                 new Todo
                 {
-                    Description = "Buy milk",
+                    Description = "Buy pc",
                     IsDone = false,
                     DueDate = DateTime.Parse("2022-01-01")
                 },
 
                 new Todo
                 {
-                    Description = "Buy bread",
+                    Description = "Buy keyboard",
                     IsDone = false,
                     DueDate = DateTime.Parse("2022-01-01")
                 },
 
                 new Todo
                 {
-                    Description = "Buy cheese",
+                    Description = "Remember about birthday",
                     IsDone = false,
                     DueDate = DateTime.Parse("2022-01-01")
                 }
             );
+
+            context.TasksLists.AddRange(
+                new TasksList
+                {
+                    Name = "Grocery List",
+                    Todos = new List<Todo>
+                    {
+                        new Todo
+                        {
+                            Description = "Buy milk",
+                            IsDone = false,
+                            DueDate = DateTime.Parse("2022-01-01")
+                        },
+
+                        new Todo
+                        {
+                            Description = "Buy bread",
+                            IsDone = false,
+                            DueDate = DateTime.Parse("2022-01-01")
+                        },
+
+                        new Todo
+                        {
+                            Description = "Buy cheese",
+                            IsDone = false,
+                            DueDate = DateTime.Parse("2022-01-01")
+                        }
+                    }
+                }
+            );
+
             context.SaveChanges();
         }
     }

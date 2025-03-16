@@ -59,7 +59,7 @@ namespace ToDoList.Migrations
                     b.Property<bool>("IsDone")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TodoListId")
+                    b.Property<int?>("TasksListId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -67,18 +67,18 @@ namespace ToDoList.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TodoListId");
+                    b.HasIndex("TasksListId");
 
                     b.ToTable("Todos");
                 });
 
             modelBuilder.Entity("ToDoList.Models.Todo", b =>
                 {
-                    b.HasOne("ToDoList.Models.TasksList", "TodoList")
+                    b.HasOne("ToDoList.Models.TasksList", "TasksList")
                         .WithMany("Todos")
-                        .HasForeignKey("TodoListId");
+                        .HasForeignKey("TasksListId");
 
-                    b.Navigation("TodoList");
+                    b.Navigation("TasksList");
                 });
 
             modelBuilder.Entity("ToDoList.Models.TasksList", b =>
