@@ -14,7 +14,7 @@ public class Todo
     [StringLength(100, MinimumLength = 1)]
     public string Description { get; set; } = string.Empty;
 
-    [DisplayName("Is Done")]
+    [DisplayName("Completed")]
     public bool IsDone { get; set; }
 
     [DisplayName("Created At")]

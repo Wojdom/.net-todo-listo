@@ -93,8 +93,6 @@ namespace ToDoList.Controllers
         }
 
         // POST: Todo/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,IsDone,DueDate")] Todo todo)
@@ -126,6 +124,26 @@ namespace ToDoList.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(todo);
+        }
+
+        // POST: Todo/MarkCompleted/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkCompleted(int id)
+        {
+            var todo = await _dbContext.Todos.FindAsync(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            todo.IsDone = true;
+            todo.UpdatedAt = DateTime.Now;
+            
+            _dbContext.Update(todo);
+            await _dbContext.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Todo/Delete/5
