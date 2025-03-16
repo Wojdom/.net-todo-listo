@@ -4,18 +4,18 @@ using System.ComponentModel.DataAnnotations;
 namespace ToDoList.Models;
 
 /// <summary>
-///  Represent a todo item.
-///  </summary>
-public class Todo
+///   Represents a list of tasks.
+/// </summary>
+public class TasksList
 {
     public int Id { get; set; }
 
+
     [Required]
     [StringLength(100, MinimumLength = 1)]
-    public string Description { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
-    [DisplayName("Is Done")]
-    public bool IsDone { get; set; }
+    public List<Todo> Todos { get; set; } = [];
 
     [DisplayName("Created At")]
     [DataType(DataType.Date)]
@@ -25,15 +25,7 @@ public class Todo
     [DataType(DataType.Date)]
     public DateTime UpdatedAt { get; set; }
 
-    [DisplayName("Due Date")]
-    [DataType(DataType.Date)]
-    public DateTime? DueDate { get; set; }
-
-    public int? TodoListId { get; set; }
-
-    public virtual TasksList? TodoList { get; set; }
-
-    public Todo()
+    public TasksList()
     {
         CreatedAt = UpdatedAt = DateTime.Now;
     }

@@ -1,3 +1,11 @@
+<!-- POTENTIAL IMPROVEMENTS: 
+1) add a button to show/hide completed tasks
+2) make asynchronus updates to the list
+3) add a button to mark a task as completed
+4) add search functionality
+5) add a button to delete all completed tasks
+-->
+
 @model IEnumerable<ToDoList.Models.Todo>
 
 @{
@@ -9,6 +17,14 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Todo" asp-action="Index">
+    <p>
+        <label>Description: <input type="text" name="SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>

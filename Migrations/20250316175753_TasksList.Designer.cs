@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoList.Data;
 
@@ -10,34 +11,14 @@ using TodoList.Data;
 namespace ToDoList.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    partial class TodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250316175753_TasksList")]
+    partial class TasksList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
-
-            modelBuilder.Entity("ToDoList.Models.TasksList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TasksLists");
-                });
 
             modelBuilder.Entity("ToDoList.Models.Todo", b =>
                 {
@@ -50,7 +31,6 @@ namespace ToDoList.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("DueDate")
@@ -72,16 +52,37 @@ namespace ToDoList.Migrations
                     b.ToTable("Todos");
                 });
 
+            modelBuilder.Entity("ToDoList.Models.TodoList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TodoLists");
+                });
+
             modelBuilder.Entity("ToDoList.Models.Todo", b =>
                 {
-                    b.HasOne("ToDoList.Models.TasksList", "TodoList")
+                    b.HasOne("ToDoList.Models.TodoList", "TodoList")
                         .WithMany("Todos")
                         .HasForeignKey("TodoListId");
 
                     b.Navigation("TodoList");
                 });
 
-            modelBuilder.Entity("ToDoList.Models.TasksList", b =>
+            modelBuilder.Entity("ToDoList.Models.TodoList", b =>
                 {
                     b.Navigation("Todos");
                 });

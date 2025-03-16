@@ -13,7 +13,7 @@ public static class SeedData
         {
             var log = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            if (context.Todo.Any())
+            if (context.Todos.Any())
             {
                 log.LogInformation("The database has already been seeded.");
                 return; 
@@ -21,7 +21,7 @@ public static class SeedData
 
             log.LogInformation("Seeding the database.");
 
-            context.Todo.AddRange(
+            context.Todos.AddRange(
                 new Todo
                 {
                     Description = "Buy milk",

@@ -12,9 +12,22 @@ namespace ToDoList.Controllers
         private readonly TodoDbContext _dbContext = context;
 
         // GET: Todo
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _dbContext.Todo.ToListAsync());
+            if (_dbContext.Todos == null)
+            {
+                return Problem("Entity set 'Todos' is null");
+            }
+
+            var tasks = from t in _dbContext.Todos
+                        select t;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                tasks = tasks.Where(
+                    s => s.Description.Contains(searchString));
+            }
+
+            return View(await tasks.ToListAsync());
         }
 
         // GET: Todo/Details/5
@@ -27,7 +40,7 @@ namespace ToDoList.Controllers
                 return NotFound();
             }
 
-            var todo = await _dbContext.Todo
+            var todo = await _dbContext.Todos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (todo == null)
             {
@@ -70,7 +83,7 @@ namespace ToDoList.Controllers
                 return NotFound();
             }
 
-            var todo = await _dbContext.Todo.FindAsync(id);
+            var todo = await _dbContext.Todos.FindAsync(id);
             if (todo == null)
             {
                 return NotFound();
@@ -122,7 +135,7 @@ namespace ToDoList.Controllers
                 return NotFound();
             }
 
-            var todo = await _dbContext.Todo
+            var todo = await _dbContext.Todos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (todo == null)
             {
@@ -137,10 +150,10 @@ namespace ToDoList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var todo = await _dbContext.Todo.FindAsync(id);
+            var todo = await _dbContext.Todos.FindAsync(id);
             if (todo != null)
             {
-                _dbContext.Todo.Remove(todo);
+                _dbContext.Todos.Remove(todo);
             }
 
             await _dbContext.SaveChangesAsync();
@@ -149,7 +162,7 @@ namespace ToDoList.Controllers
 
         private bool TodoExists(int id)
         {
-            return _dbContext.Todo.Any(e => e.Id == id);
+            return _dbContext.Todos.Any(e => e.Id == id);
         }
     }
 }
