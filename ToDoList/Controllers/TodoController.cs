@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Models;
 using TodoList.Data;
@@ -52,9 +53,33 @@ namespace ToDoList.Controllers
         }
 
         // GET: Todo/Create
-        public IActionResult Create()
+        public IActionResult Create(int? tasksListId)
         {
-            return View();
+            var todo = new Todo();
+            if (tasksListId.HasValue)
+            {
+                todo.TasksListId = tasksListId;
+            }
+            
+            // Get all available TasksLists for the dropdown
+            ViewBag.TasksLists = _dbContext.TasksLists
+                .Select(tl => new SelectListItem
+                {
+                    Value = tl.Id.ToString(),
+                    Text = tl.Name,
+                    Selected = tasksListId.HasValue && tl.Id == tasksListId.Value
+                })
+                .ToList();
+            
+            // Add a "None" option
+            ViewBag.TasksLists.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "-- None --",
+                Selected = !tasksListId.HasValue
+            });
+            
+            return View(todo);
         }
 
         // POST: Todo/Create
@@ -62,7 +87,7 @@ namespace ToDoList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,IsDone,DueDate")] Todo todo)
+        public async Task<IActionResult> Create([Bind("Id,Description,IsDone,DueDate,TasksListId")] Todo todo)
         {
             this._logger.LogDebug("Create action called");
 
@@ -71,6 +96,13 @@ namespace ToDoList.Controllers
                 this._logger.LogDebug("Model is valid");
                 _dbContext.Add(todo);
                 await _dbContext.SaveChangesAsync();
+                
+                // If the todo belongs to a TasksList, redirect back to that list's details
+                if (todo.TasksListId.HasValue)
+                {
+                    return RedirectToAction("Details", "TasksLists", new { id = todo.TasksListId.Value });
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(todo);
@@ -89,6 +121,25 @@ namespace ToDoList.Controllers
             {
                 return NotFound();
             }
+            
+            // Get all available TasksLists for the dropdown
+            ViewBag.TasksLists = _dbContext.TasksLists
+                .Select(tl => new SelectListItem
+                {
+                    Value = tl.Id.ToString(),
+                    Text = tl.Name,
+                    Selected = todo.TasksListId.HasValue && tl.Id == todo.TasksListId.Value
+                })
+                .ToList();
+            
+            // Add a "None" option
+            ViewBag.TasksLists.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "-- None --",
+                Selected = !todo.TasksListId.HasValue
+            });
+            
             return View(todo);
         }
 
@@ -142,6 +193,12 @@ namespace ToDoList.Controllers
             
             _dbContext.Update(todo);
             await _dbContext.SaveChangesAsync();
+            
+            // If the todo belongs to a TasksList, redirect back to that list's details
+            if (todo.TasksListId.HasValue)
+            {
+                return RedirectToAction("Details", "TasksLists", new { id = todo.TasksListId.Value });
+            }
             
             return RedirectToAction(nameof(Index));
         }
