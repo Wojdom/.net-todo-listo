@@ -15,7 +15,7 @@ namespace ToDoList.Controllers
         // GET: TasksLists
         public async Task<IActionResult> Index()
         {
-            this._logger.LogInformation("Tasks list action called");
+            this._logger.LogDebug("Tasks list action called");
 
             return View(await _dbContext.TasksLists.ToListAsync());
         }
@@ -23,7 +23,7 @@ namespace ToDoList.Controllers
         // GET: TasksLists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            this._logger.LogInformation("Details action called");
+            this._logger.LogDebug("Details action called");
 
             if (id == null)
             {
@@ -48,8 +48,6 @@ namespace ToDoList.Controllers
         }
 
         // POST: TodoList/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] TasksList todoList)
