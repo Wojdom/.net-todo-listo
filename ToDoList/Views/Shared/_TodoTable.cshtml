@@ -1,0 +1,55 @@
+@model IEnumerable<ToDoList.Models.Todo>
+
+<table class="table">
+    <thead>
+       <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var todo in Model)
+        {
+            <tr class="@(todo.IsDone ? "table-success" : "")">
+                <td>@todo.Description</td>
+                <td>
+                    @if (todo.IsDone)
+                    {
+                        <span class="badge bg-success">Completed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                </td>
+                <td>@todo.DueDate?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <div class="btn-group">
+                        <a asp-controller="Todo" asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        @if (!todo.IsDone)
+                        {
+                            <form asp-controller="Todo" asp-action="MarkCompleted" asp-route-id="@todo.Id" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-circle"></i> Complete
+                                </button>
+                            </form>
+                        }
+                        <a asp-controller="Todo" asp-action="Delete" asp-route-id="@todo.Id" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
