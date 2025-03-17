@@ -145,5 +145,42 @@ namespace ToDoList.Tests
             var firstList = model.First(t => t.Id == 1);
             Assert.NotEmpty(firstList.Todos); 
         }
+
+        [Fact]
+        public async Task Delete_GET_ReturnsNotFound_WhenIdIsNull()
+        {
+            var result = await _controller.Delete(null);
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_GET_ReturnsNotFound_WhenTasksListDoesNotExist()
+        {
+            var result = await _controller.Delete(99);
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_GET_ReturnsViewWithTasksList_WhenTasksListExists()
+        {
+            var result = await _controller.Delete(1);
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<TasksList>(viewResult.Model);
+            Assert.Equal(1, model.Id);
+            Assert.Equal("Work Tasks", model.Name);
+        }
+
+        [Fact]
+        public async Task DeleteConfirmed_POST_DeletesTasksListAndRedirectsToIndex()
+        {
+            var result = await _controller.DeleteConfirmed(1);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(TasksListsController.Index), redirectResult.ActionName);
+
+            var tasksListInDb = await _context.TasksLists.FindAsync(1);
+            Assert.Null(tasksListInDb);
+        }
     }
 }
