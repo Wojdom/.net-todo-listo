@@ -3,13 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ToDoList.Models;
 using TodoList.Data;
 
-
 namespace ToDoList.Controllers
 {
     public class TasksListsController(ILogger<TasksListsController> logger, TodoDbContext context) : Controller
     {
         private readonly ILogger<TasksListsController> _logger = logger;
-
         private readonly TodoDbContext _dbContext = context;
 
         // GET: TasksLists
@@ -62,6 +60,43 @@ namespace ToDoList.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(todoList);
+        }
+
+        // GET: TasksLists/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            this._logger.LogDebug("Delete action called");
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tasksList = await _dbContext.TasksLists
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (tasksList == null)
+            {
+                return NotFound();
+            }
+
+            return View(tasksList);
+        }
+
+        // POST: TasksLists/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            this._logger.LogDebug("DeleteConfirmed action called");
+
+            var tasksList = await _dbContext.TasksLists.FindAsync(id);
+            if (tasksList != null)
+            {
+                _dbContext.TasksLists.Remove(tasksList);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

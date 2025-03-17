@@ -33,13 +33,13 @@
                 <td>@todo.DueDate?.ToString("yyyy-MM-dd")</td>
                 <td>
                     <div class="btn-group">
-                        <a asp-controller="Todo" asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-sm btn-primary">
+                        <a asp-controller="Todo" asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-sm btn-primary me-2">
                             <i class="bi bi-pencil"></i> Edit
                         </a>
                         @if (!todo.IsDone)
                         {
                             <form asp-controller="Todo" asp-action="MarkCompleted" asp-route-id="@todo.Id" method="post" style="display:inline">
-                                <button type="submit" class="btn btn-sm btn-success">
+                                <button type="submit" class="btn btn-sm btn-success me-2">
                                     <i class="bi bi-check-circle"></i> Complete
                                 </button>
                             </form>

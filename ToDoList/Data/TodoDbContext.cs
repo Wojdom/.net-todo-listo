@@ -9,5 +9,14 @@ namespace TodoList.Data
         public DbSet<ToDoList.Models.Todo> Todos { get; set; } = default!;
 
         public DbSet<ToDoList.Models.TasksList> TasksLists { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ToDoList.Models.Todo>()
+                        .HasOne(t => t.TasksList)
+                        .WithMany(tl => tl.Todos)
+                        .HasForeignKey(t => t.TasksListId)
+                        .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
